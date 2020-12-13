@@ -15,16 +15,24 @@ $message = array();
 $message_array = array();
 $success_message = null;
 $error_message = array();
+$clean = array();
 
 
 if( !empty($_POST['btn_submit']) ) {
   //表示名のチェック
   if( empty($_POST['view_name']) ) {
     $error_message[] = '名前を入力してください。';
+  } else {
+    $clean['view_name'] = htmlspecialchars( $_POST['view_name'], ENT_QUOTES);
+    $clean['view_name'] = preg_replace( '/\\r\\n|\\r/', '', $clean['view_name']);
+
   }
   //テキストのチェック
   if( empty($_POST['message']) ) {
     $error_message[] = 'textを入力してください。';
+  } else {
+    $clean['message'] = htmlspecialchars($_POST['message'], ENT_QUOTES);
+    $clean['message'] = preg_replace( '/\\r\\n|\\r/', '<br>', $clean['message']);
   }
 
   if( empty($error_message) ) {
@@ -33,7 +41,7 @@ if( !empty($_POST['btn_submit']) ) {
       //書き込み日時を取得
       $now_date = date("Y-m-d H:i:s");
       //書き込むデータを作成
-      $date = "'".$_POST['view_name']."','".$_POST['message']."','".$now_date."'\n";
+      $date = "'".$clean['view_name']."','".$clean['message']."','".$now_date."'\n";
       //書き込み
       fwrite( $file_handle, $date);
       //ファイルを閉じる。
