@@ -14,21 +14,35 @@ $split_date = null;
 $message = array();
 $message_array = array();
 $success_message = null;
+$error_message = array();
+
 
 if( !empty($_POST['btn_submit']) ) {
-  if( $file_handle = fopen( FILENAME, "a")) {
-    //書き込み日時を取得
-    $now_date = date("Y-m-d H:i:s");
-    //書き込むデータを作成
-    $date = "'".$_POST['view_name']."','".$_POST['message']."','".$now_date."'\n";
-    //書き込み
-    fwrite( $file_handle, $date);
-    //ファイルを閉じる。
-    fclose( $file_handle);
-
-    $success_message = 'ｔｗｅｅｔが完了しました。';
+  //表示名のチェック
+  if( empty($_POST['view_name']) ) {
+    $error_message[] = '名前を入力してください。';
   }
-  // var_dump($_POST);	
+  //テキストのチェック
+  if( empty($_POST['message']) ) {
+    $error_message[] = 'textを入力してください。';
+  }
+
+  if( empty($error_message) ) {
+
+    if( $file_handle = fopen( FILENAME, "a")) {
+      //書き込み日時を取得
+      $now_date = date("Y-m-d H:i:s");
+      //書き込むデータを作成
+      $date = "'".$_POST['view_name']."','".$_POST['message']."','".$now_date."'\n";
+      //書き込み
+      fwrite( $file_handle, $date);
+      //ファイルを閉じる。
+      fclose( $file_handle);
+
+      $success_message = 'ｔｗｅｅｔが完了しました。';
+    }
+    // var_dump($_POST);	
+  }
   
   if( $file_handle = fopen( FILENAME,'r')) {
     while( $data = fgets($file_handle) ){
@@ -66,6 +80,16 @@ if( !empty($_POST['btn_submit']) ) {
     <?php echo $success_message; ?>
   </p>
 <?php endif; ?>
+
+<?php if( !empty($error_message) ): ?>
+  <ul class="error_message">
+    <?php foreach( $error_message as $value ): ?>
+      <li>
+        <?php echo $value; ?>
+      </li>
+    <?php endforeach; ?>
+  </ul>
+    <?php endif; ?>
 
 <div class="messageform" style="margin-left: 20px;">
   <form method="post">
