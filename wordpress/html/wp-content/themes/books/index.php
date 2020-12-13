@@ -13,6 +13,7 @@ $file_handle = null;
 $split_date = null;
 $message = array();
 $message_array = array();
+$success_message = null;
 
 if( !empty($_POST['btn_submit']) ) {
   if( $file_handle = fopen( FILENAME, "a")) {
@@ -24,6 +25,8 @@ if( !empty($_POST['btn_submit']) ) {
     fwrite( $file_handle, $date);
     //ファイルを閉じる。
     fclose( $file_handle);
+
+    $success_message = 'ｔｗｅｅｔが完了しました。';
   }
   // var_dump($_POST);	
   
@@ -55,8 +58,15 @@ if( !empty($_POST['btn_submit']) ) {
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
+  <!-- ここにメッセージの入力フォームを設置 -->
 <h1>超劣化版Ｔｗｉｔｔｅｒ</h1>
-<!-- ここにメッセージの入力フォームを設置 -->
+
+<?php if( !empty($success_message) ): ?>
+  <p class="success_message">
+    <?php echo $success_message; ?>
+  </p>
+<?php endif; ?>
+
 <div class="messageform" style="margin-left: 20px;">
   <form method="post">
     <div>
